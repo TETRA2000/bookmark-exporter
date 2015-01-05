@@ -1,6 +1,5 @@
 package jp.tetra2000.bookmarkexporter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -122,15 +121,15 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
                 String filePath = dirPath + File.separator + "bookmark_" + format.format(new Date()) + ".html";
                 File file = new File(filePath);
                 try {
-                    file.createNewFile();
-                    FileOutputStream fos = new FileOutputStream(file);
-                    BufferedOutputStream bos = new BufferedOutputStream(fos);
-                    String src = params[0];
-                    bos.write(src.getBytes());
-                    bos.flush();
-                    bos.close();
-
-                    return Uri.fromFile(file);
+                    if (file.createNewFile()) {
+                        FileOutputStream fos = new FileOutputStream(file);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos);
+                        String src = params[0];
+                        bos.write(src.getBytes());
+                        bos.flush();
+                        bos.close();
+                        return Uri.fromFile(file);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
