@@ -1,15 +1,28 @@
 package jp.tetra2000.bookmarkexporter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Browser;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class MainActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -72,16 +85,58 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         int titleIndex = cursor.getColumnIndex(Browser.BookmarkColumns.TITLE);
+        int urlIndex = cursor.getColumnIndex(Browser.BookmarkColumns.URL);
+        int bookmarkIndex = cursor.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
 
+        BookmarkHelper bookmarkHelper = new BookmarkHelper();
+
+        cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            String title = cursor.getColumnName(titleIndex);
+            String title = cursor.getString(titleIndex);
+            String URL = cursor.getString(urlIndex);
+            boolean isBookmark = cursor.getInt(bookmarkIndex) == 1;
+
+            if(isBookmark)
+                bookmarkHelper.add(new Bookmark(title, URL));
 
             cursor.moveToNext();
         }
+
+        shareBookmarkFile(bookmarkHelper.toHTML());
+
+        Log.d("bookmark", bookmarkHelper.toHTML());
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
+    }
+
+    private void shareBookmarkFile(String src) {
+        new AsyncTask<String, Void, String>() {
+
+            @Override
+            protected String doInBackground(String... params) {
+                String dirPath = Environment.getExternalStorageDirectory().getPath();
+                DateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                String filePath = dirPath + File.separator + format.format(new Date()) + ".html";
+                File file = new File(filePath);
+                try {
+                    file.createNewFile();
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+                    String src = params[0];
+                    bos.write(src.getBytes());
+                    bos.flush();
+                    bos.close();
+
+                    return Uri.fromFile(file).toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+        }.execute(src);
     }
 }
