@@ -41,7 +41,6 @@ public class BookmarkHelper {
 
         builder.append(TEMPLATE_SUF);
 
-        Document doc = Jsoup.parse(builder.toString());
-        return doc.toString();
+        return builder.toString();
     }
 }
