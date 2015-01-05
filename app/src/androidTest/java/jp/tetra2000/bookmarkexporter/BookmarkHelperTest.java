@@ -15,7 +15,7 @@ public class BookmarkHelperTest extends TestCase {
         helper.add(new Bookmark("GitHub", "https://github.com/"));
         helper.add(new Bookmark("Twitter", "https://twitter.com"));
 
-        String expectedStr = "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n" +
+        String expected = "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n" +
                 "\t<HTML>\n" +
                 "\t<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=UTF-8\">\n" +
                 "\t<Title>Bookmarks</Title>\n" +
@@ -24,8 +24,6 @@ public class BookmarkHelperTest extends TestCase {
                 "\t\t<DT><A HREF=\"https://github.com/\">GitHub</A>\n" +
                 "\t\t<DT><A HREF=\"https://twitter.com\">Twitter</A>\n" +
                 "</HTML>\n";
-        Document expected = Jsoup.parse(expectedStr);
-        Document actual = Jsoup.parse(helper.toHTML());
-        assertEquals(expected.toString(), actual.toString());
+        assertEquals(expected, helper.toHTML());
     }
 }
