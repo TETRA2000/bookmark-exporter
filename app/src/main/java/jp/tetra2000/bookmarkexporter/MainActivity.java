@@ -119,7 +119,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
             protected Uri doInBackground(String... params) {
                 String dirPath = Environment.getExternalStorageDirectory().getPath();
                 DateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String filePath = dirPath + File.separator + format.format(new Date()) + ".html";
+                String filePath = dirPath + File.separator + "bookmark_" + format.format(new Date()) + ".html";
                 File file = new File(filePath);
                 try {
                     file.createNewFile();
