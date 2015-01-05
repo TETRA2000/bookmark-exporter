@@ -113,10 +113,10 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     }
 
     private void shareBookmarkFile(String src) {
-        new AsyncTask<String, Void, String>() {
+        new AsyncTask<String, Void, Uri>() {
 
             @Override
-            protected String doInBackground(String... params) {
+            protected Uri doInBackground(String... params) {
                 String dirPath = Environment.getExternalStorageDirectory().getPath();
                 DateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
                 String filePath = dirPath + File.separator + format.format(new Date()) + ".html";
@@ -130,12 +130,21 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
                     bos.flush();
                     bos.close();
 
-                    return Uri.fromFile(file).toString();
+                    return Uri.fromFile(file);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Uri uriToFile) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uriToFile);
+                shareIntent.setType("text/html");
+                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
             }
         }.execute(src);
     }
