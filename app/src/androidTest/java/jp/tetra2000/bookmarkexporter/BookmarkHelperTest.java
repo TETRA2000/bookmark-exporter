@@ -2,12 +2,6 @@ package jp.tetra2000.bookmarkexporter;
 
 import junit.framework.TestCase;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-/**
- * Created by Takahiko on 2015/01/05.
- */
 public class BookmarkHelperTest extends TestCase {
     public void testToHTML() {
         BookmarkHelper helper = new BookmarkHelper();

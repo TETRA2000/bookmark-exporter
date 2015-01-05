@@ -1,16 +1,10 @@
 package jp.tetra2000.bookmarkexporter;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Takahiko on 2015/01/05.
- */
 
-public class BookmarkHelper {
+class BookmarkHelper {
     private static final String TEMPLATE_PRE =
             "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n" +
             "\t<HTML>\n" +
@@ -19,7 +13,7 @@ public class BookmarkHelper {
             "\t<H1>Bookmarks</H1>\n";
     private static final String TEMPLATE_SUF = "</HTML>\n";
 
-    private List<Bookmark> mBookmarks = new ArrayList<Bookmark>();
+    private List<Bookmark> mBookmarks = new ArrayList<>();
 
     public void add(Bookmark bookmark) {
         mBookmarks.add(bookmark);
